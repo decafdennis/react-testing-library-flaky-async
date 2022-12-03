@@ -23,7 +23,7 @@ function App() {
 function Counter({ query }) {
   const [count, setCount] = useState(0);
 
-  // Make this component take the whole time slice to render.
+  // Make this component take the whole time slice to render, to force its effects to be async.
   let startTime = performance.now();
   while (performance.now() - startTime < assumedTimeSliceDuration) { }
 
@@ -38,8 +38,11 @@ function Counter({ query }) {
 
   // Reset the count when the query changes.
   useEffect(() => {
-    console.log('effect', query, count);
-    setCount(0);
+    console.log('zero effect', query, count);
+    setCount(count => {
+      console.log('zero', query, count);
+      return 0;
+    });
   }, [query]);
 
   console.log('render', query, count);
