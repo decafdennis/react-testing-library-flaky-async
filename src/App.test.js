@@ -23,7 +23,7 @@ test("increment", async () => {
   }, { interval: 0 });
 
   // Solution 2: yield to the event loop to allow the cascading render to happen.
-  await new Promise(resolve => setTimeout(resolve));
+  // await new Promise(resolve => setTimeout(resolve));
 
   await userEvent.click(increment);
   expect(count).toHaveTextContent("1");
