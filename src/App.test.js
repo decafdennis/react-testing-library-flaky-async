@@ -2,23 +2,26 @@ import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
 
+// This test is flaky.
 test("increment", async () => {
   render(<App />);
+  const queryInput = screen.getByTestId("query-input");
+  const query = screen.getByTestId("query");
   const count = screen.getByTestId("count");
-  const cascadedCount = screen.getByTestId("cascaded-count");
-  expect(count).toHaveTextContent("0");
-  expect(cascadedCount).toHaveTextContent("0");
+  const increment = screen.getByTestId("increment");
 
-  const button = screen.getByText("Increment");
-  await userEvent.click(button);
-  // Solution 1: wait for the async behavior in act() so that the cascading render happens here.
+  await userEvent.type(queryInput, 'hello');
+
+  // Solution: wait for the async behavior in act() so that the cascading render happens here.
   // await act(async () => {
   //   await new Promise(resolve => setTimeout(resolve));
   // });
-  await waitFor(async () => {
-    expect(count).toHaveTextContent("1");
-  });
-  // Solution 2: yield to the next macrotask so that any batched renders can happen.
-  // await new Promise(resolve => setTimeout(resolve));
-  expect(cascadedCount).toHaveTextContent("1");
+
+  // NOT a solution: this only guarantees the first render happened, but not the cascading render.
+  await waitFor(() => {
+    expect(query).toHaveTextContent("hello");
+  }, { interval: 0 });
+
+  await userEvent.click(increment);
+  expect(count).toHaveTextContent("1");
 });
