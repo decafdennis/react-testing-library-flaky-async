@@ -12,7 +12,7 @@ test("increment", async () => {
 
   await userEvent.type(queryInput, 'hello');
 
-  // Solution: wait for the async behavior in act() so that the cascading render happens here.
+  // Solution 1: wait for the async behavior in act() so that the cascading render happens here.
   // await act(async () => {
   //   await new Promise(resolve => setTimeout(resolve));
   // });
@@ -21,6 +21,9 @@ test("increment", async () => {
   await waitFor(() => {
     expect(query).toHaveTextContent("hello");
   }, { interval: 0 });
+
+  // Solution 2: yield to the event loop to allow the cascading render to happen.
+  await new Promise(resolve => setTimeout(resolve));
 
   await userEvent.click(increment);
   expect(count).toHaveTextContent("1");
