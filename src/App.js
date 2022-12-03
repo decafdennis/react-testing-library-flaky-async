@@ -38,7 +38,7 @@ function Counter({ query }) {
 
   // Reset the count when the query changes.
   useEffect(() => {
-    console.log('effect', query);
+    console.log('effect', query, count);
     setCount(0);
   }, [query]);
 
